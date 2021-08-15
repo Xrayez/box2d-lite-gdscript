@@ -60,7 +60,7 @@ func step(dt: float):
 	var inv_dt = 1.0 / dt if dt > 0.0 else 0.0
 
 	# Determine overlapping bodies and update contact points.
-	broad_phase();
+	broad_phase()
 
 	# Integrate forces.
 	for i in bodies.size():
@@ -77,7 +77,7 @@ func step(dt: float):
 		arb.pre_step(inv_dt)
 
 	for i in joints.size():
-		joints[i].pre_step(inv_dt);
+		joints[i].pre_step(inv_dt)
 
 	# Perform iterations.
 	for i in iterations:
