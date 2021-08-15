@@ -16,8 +16,8 @@ script = ExtResource( 3 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 0.025, -0.025 )
-offset_v = 0.1
+zoom = Vector2( 0.027, -0.027 )
+offset_v = 0.11
 
 [node name="UI" type="CanvasLayer" parent="."]
 offset = Vector2( 10, 10 )
@@ -35,7 +35,7 @@ __meta__ = {
 }
 
 [node name="Border" type="ReferenceRect" parent="UI"]
-margin_right = 400.0
+margin_right = 300.0
 margin_bottom = 160.0
 border_color = Color( 0.329412, 0.329412, 0.329412, 1 )
 editor_only = false

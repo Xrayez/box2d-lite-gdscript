@@ -30,11 +30,6 @@ _global_script_classes=[ {
 "path": "res://world.gd"
 }, {
 "base": "Reference",
-"class": "Collide",
-"language": "GDScript",
-"path": "res://collide.gd"
-}, {
-"base": "Reference",
 "class": "Math",
 "language": "GDScript",
 "path": "res://math_utils.gd"
@@ -44,7 +39,6 @@ _global_script_class_icons={
 "Box2DBody": "",
 "Box2DJoint": "",
 "Box2DWorld": "",
-"Collide": "",
 "Math": ""
 }
 

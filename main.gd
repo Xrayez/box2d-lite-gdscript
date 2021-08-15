@@ -14,9 +14,9 @@ func _ready():
 	world.gravity = gravity
 	world.iterations = iterations
 
-	$Camera2D.offset_v = 0.1
+	$Camera2D.offset_v = 0.11
 
-	init_demo(2)
+	init_demo(3)
 
 
 func init_demo(index: int):
@@ -27,6 +27,7 @@ func init_demo(index: int):
 	call("demo_%s" % demo_index)
 
 
+# Single box.
 func demo_1():
 	var b = Box2DBody.new()
 	b.setup(Vector2(100, 20), INF)
@@ -39,6 +40,7 @@ func demo_1():
 	world.add(b)
 
 
+# A simple pendulum.
 func demo_2():
 	var b1 = Box2DBody.new()
 	b1.setup(Vector2(100, 20), INF);
@@ -57,6 +59,50 @@ func demo_2():
 	var j = Box2DJoint.new()
 	j.setup(b1, b2, Vector2(0, 11));
 	world.add(j);
+
+
+# Varying friction coefficients.
+func demo_3():
+	var b = Box2DBody.new()
+	b.setup(Vector2(100.0, 20.0), INF);
+	b.position = Vector2(0.0, -0.5 * b.width.y)
+	world.add(b)
+
+	b = Box2DBody.new()
+	b.setup(Vector2(13.0, 0.25), INF);
+	b.position = Vector2(-2.0, 11.0)
+	b.rotation = -0.25;
+	world.add(b)
+
+	b = Box2DBody.new()
+	b.setup(Vector2(0.25, 1.0), INF);
+	b.position = Vector2(5.25, 9.5)
+	world.add(b)
+
+	b = Box2DBody.new()
+	b.setup(Vector2(13.0, 0.25), INF);
+	b.position = Vector2(2.0, 7.0)
+	b.rotation = 0.25;
+	world.add(b)
+
+	b = Box2DBody.new()
+	b.setup(Vector2(0.25, 1.0), INF);
+	b.position = Vector2(-5.25, 5.5)
+	world.add(b)
+
+	b = Box2DBody.new()
+	b.setup(Vector2(13.0, 0.25), INF);
+	b.position = Vector2(-2.0, 3.0)
+	b.rotation = -0.25;
+	world.add(b)
+
+	var friction = [0.75, 0.5, 0.35, 0.1, 0.0]
+	for i in 5:
+		b = Box2DBody.new()
+		b.setup(Vector2(0.5, 0.5), 25.0);
+		b.friction = friction[i];
+		b.position = Vector2(-7.5 + 2.0 * i, 14.0)
+		world.add(b)
 
 
 func launch_bomb():
