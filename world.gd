@@ -40,7 +40,7 @@ func broad_phase():
 		for j in range(i + 1, bodies.size()):
 			var bj = bodies[j]
 
-			if (bi.inv_mass == 0.0 && bj.inv_mass == 0.0):
+			if bi.inv_mass == 0.0 && bj.inv_mass == 0.0:
 				continue
 
 			var new_arb = Box2DArbiter.new(bi, bj)
@@ -52,8 +52,7 @@ func broad_phase():
 				else:
 					arbiters[key].update(new_arb.contacts, new_arb.num_contacts)
 			else:
-				# warning-ignore:return_value_discarded
-				arbiters.erase(key)
+				var _erased = arbiters.erase(key)
 
 
 func step(dt: float):
@@ -70,7 +69,7 @@ func step(dt: float):
 			continue
 
 		b.velocity += dt * (gravity + b.inv_mass * b.force)
-		b.angular_velocity += dt * b.inv_I * b.torque
+		b.angular_velocity += dt * b.inv_inertia * b.torque
 
 	# Perform pre-steps.
 	for arb in arbiters.values():

@@ -1,34 +1,18 @@
 class_name Box2DBody extends Node2D
 
-var velocity: Vector2
-var angular_velocity: float
+var velocity = Vector2()
+var angular_velocity = 0.0
 
-var force: Vector2
-var torque: float
+var force = Vector2()
+var torque = 0.0
 
-var width: Vector2
+var width = Vector2(1, 1)
 
-var friction: float
-var mass: float
-var inv_mass: float
-var I: float
-var inv_I: float
-
-
-func _init():
-	position = Vector2()
-	rotation = 0.0
-	velocity = Vector2()
-	angular_velocity = 0.0
-	force = Vector2()
-	torque = 0.0
-	friction = 0.2
-
-	width = Vector2(1, 1)
-	mass = INF
-	inv_mass = 0.0
-	I = INF
-	inv_I = 0.0
+var friction = 0.2
+var mass = INF
+var inv_mass = 0.0
+var inertia = INF
+var inv_inertia = 0.0
 
 
 func add_force(p_force: Vector2):
@@ -49,12 +33,12 @@ func setup(p_width: Vector2, p_mass: float):
 
 	if mass < INF:
 		inv_mass = 1.0 / mass
-		I = mass * (width.x * width.x + width.y * width.y) / 12.0
-		inv_I = 1.0 / I
+		inertia = mass * (width.x * width.x + width.y * width.y) / 12.0
+		inv_inertia = 1.0 / inertia
 	else:
 		inv_mass = 0.0
-		I = INF
-		inv_I = 0.0
+		inertia = INF
+		inv_inertia = 0.0
 
 
 func _process(_delta):

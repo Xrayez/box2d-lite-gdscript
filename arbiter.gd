@@ -15,9 +15,9 @@ class Contact:
 	var r1: Vector2
 	var r2: Vector2
 	var separation: float
-	var Pn: float = 0.0 # Accumulated normal impulse.
-	var Pt: float = 0.0 # Accumulated tangent impulse.
-	var Pnb: float = 0.0 # Accumulated normal impulse for position bias.
+	var pn: float = 0.0 # Accumulated normal impulse.
+	var pt: float = 0.0 # Accumulated tangent impulse.
+	var pnb: float = 0.0 # Accumulated normal impulse for position bias.
 	var mass_normal: float
 	var mass_tangent: float
 	var bias: float
@@ -75,18 +75,18 @@ func update(new_contacts: Array, num_new_contacts: int):
 				k = j
 				break
 
-		if (k > -1):
+		if k > -1:
 			var c = merged_contacts[i]
 			var c_old = contacts[k]
 			merged_contacts[i] = c_new
 			if PhysicsWorld.warm_starting:
-				c.Pn = c_old.Pn
-				c.Pt = c_old.Pt
-				c.Pnb = c_old.Pnb
+				c.pn = c_old.pn
+				c.pt = c_old.pt
+				c.pnb = c_old.pnb
 			else:
-				c.Pn = 0.0
-				c.Pt = 0.0
-				c.Pnb = 0.0
+				c.pn = 0.0
+				c.pt = 0.0
+				c.pnb = 0.0
 		else:
 			merged_contacts[i] = new_contacts[i]
 
@@ -110,27 +110,27 @@ func pre_step(inv_dt: float):
 		var rn1 = r1.dot(c.normal)
 		var rn2 = r2.dot(c.normal)
 		var k_normal = body_1.inv_mass + body_2.inv_mass
-		k_normal += body_1.inv_I * (r1.dot(r1) - rn1 * rn1) + body_2.inv_I * (r2.dot(r2) - rn2 * rn2)
+		k_normal += body_1.inv_inertia * (r1.dot(r1) - rn1 * rn1) + body_2.inv_inertia * (r2.dot(r2) - rn2 * rn2)
 		c.mass_normal = 1.0 / k_normal
 
 		var tangent = Math.cross_scalar(c.normal, 1.0)
 		var rt1 = r1.dot(tangent)
 		var rt2 = r2.dot(tangent)
 		var k_tangent = body_1.inv_mass + body_2.inv_mass
-		k_tangent += body_1.inv_I * (r1.dot(r1) - rt1 * rt1) + body_2.inv_I * (r2.dot(r2) - rt2 * rt2)
+		k_tangent += body_1.inv_inertia * (r1.dot(r1) - rt1 * rt1) + body_2.inv_inertia * (r2.dot(r2) - rt2 * rt2)
 		c.mass_tangent = 1.0 /  k_tangent
 
 		c.bias = -k_bias_factor * inv_dt * min(0.0, c.separation + k_allowed_penetration)
 
 		if PhysicsWorld.accumulate_impulses:
 			# Apply normal + friction impulse
-			var P = c.Pn * c.normal + c.Pt * tangent
+			var P = c.pn * c.normal + c.pt * tangent
 
 			body_1.velocity -= body_1.inv_mass * P
-			body_1.angular_velocity -= body_1.inv_I * r1.cross(P)
+			body_1.angular_velocity -= body_1.inv_inertia * r1.cross(P)
 
 			body_2.velocity += body_2.inv_mass * P
-			body_2.angular_velocity += body_2.inv_I * r2.cross(P)
+			body_2.angular_velocity += body_2.inv_inertia * r2.cross(P)
 
 
 func apply_impulse():
@@ -148,52 +148,52 @@ func apply_impulse():
 		# Compute normal impulse.
 		var vn = dv.dot(c.normal)
 
-		var d_Pn = c.mass_normal * (-vn + c.bias)
+		var dpn = c.mass_normal * (-vn + c.bias)
 
 		if PhysicsWorld.accumulate_impulses:
 			# Clamp the accumulated impulse.
-			var Pn0 = c.Pn
-			c.Pn = max(Pn0 + d_Pn, 0.0)
-			d_Pn = c.Pn - Pn0
+			var pn0 = c.pn
+			c.pn = max(pn0 + dpn, 0.0)
+			dpn = c.pn - pn0
 		else:
-			d_Pn = max(d_Pn, 0.0)
+			dpn = max(dpn, 0.0)
 
 		# Apply contact impulse.
-		var Pn = d_Pn * c.normal
+		var pn = dpn * c.normal
 
-		b1.velocity -= b1.inv_mass * Pn
-		b1.angular_velocity -= b1.inv_I * c.r1.cross(Pn)
+		b1.velocity -= b1.inv_mass * pn
+		b1.angular_velocity -= b1.inv_inertia * c.r1.cross(pn)
 
-		b2.velocity += b2.inv_mass * Pn
-		b2.angular_velocity += b2.inv_I * c.r2.cross(Pn)
+		b2.velocity += b2.inv_mass * pn
+		b2.angular_velocity += b2.inv_inertia * c.r2.cross(pn)
 
 		# Relative velocity at contact.
 		dv = b2.velocity + Math.cross_vector(b2.angular_velocity, c.r2) - b1.velocity - Math.cross_vector(b1.angular_velocity, c.r1)
 
 		var tangent = Math.cross_scalar(c.normal, 1.0)
 		var vt = dv.dot(tangent)
-		var d_Pt = c.mass_tangent * (-vt)
+		var dpt = c.mass_tangent * (-vt)
 
 		if PhysicsWorld.accumulate_impulses:
 			# Compute friction impulse.
-			var max_Pt = friction * c.Pn
+			var max_pt = friction * c.pn
 
 			# Clamp friction.
-			var old_tangent_impulse = c.Pt
-			c.Pt = clamp(old_tangent_impulse + d_Pt, -max_Pt, max_Pt)
-			d_Pt = c.Pt - old_tangent_impulse
+			var old_tangent_impulse = c.pt
+			c.pt = clamp(old_tangent_impulse + dpt, -max_pt, max_pt)
+			dpt = c.pt - old_tangent_impulse
 		else:
-			var max_Pt = friction * d_Pn
-			d_Pt = clamp(d_Pt, -max_Pt, max_Pt)
+			var max_pt = friction * dpn
+			dpt = clamp(dpt, -max_pt, max_pt)
 
 		# Apply contact impulse
-		var Pt = d_Pt * tangent
+		var pt = dpt * tangent
 
-		b1.velocity -= b1.inv_mass * Pt
-		b1.angular_velocity -= b1.inv_I * c.r1.cross(Pt)
+		b1.velocity -= b1.inv_mass * pt
+		b1.angular_velocity -= b1.inv_inertia * c.r1.cross(pt)
 
-		b2.velocity += b2.inv_mass * Pt
-		b2.angular_velocity += b2.inv_I * c.r2.cross(Pt)
+		b2.velocity += b2.inv_mass * pt
+		b2.angular_velocity += b2.inv_inertia * c.r2.cross(pt)
 
 # Collide
 
@@ -218,10 +218,10 @@ enum Axis {
 
 enum EdgeNumbers {
 	NO_EDGE = 0,
-	EDGE1,
-	EDGE2,
-	EDGE3,
-	EDGE4,
+	EDGE_1,
+	EDGE_2,
+	EDGE_3,
+	EDGE_4,
 }
 
 class ClipVertex:
@@ -285,102 +285,102 @@ static func compute_incident_edge(c: Array, h: Vector2, pos: Vector2, Rot: Trans
 	var n_abs = n.abs()
 
 	if n_abs.x > n_abs.y:
-		if (sign(n.x) > 0):
+		if sign(n.x) > 0:
 			c[0].v = Vector2(h.x, -h.y)
-			c[0].fp.e.in_edge_2 = EdgeNumbers.EDGE3
-			c[0].fp.e.out_edge_2 = EdgeNumbers.EDGE4
+			c[0].fp.e.in_edge_2 = EdgeNumbers.EDGE_3
+			c[0].fp.e.out_edge_2 = EdgeNumbers.EDGE_4
 
 			c[1].v = Vector2(h.x, h.y)
-			c[1].fp.e.in_edge_2 = EdgeNumbers.EDGE4
-			c[1].fp.e.out_edge_2 = EdgeNumbers.EDGE1
+			c[1].fp.e.in_edge_2 = EdgeNumbers.EDGE_4
+			c[1].fp.e.out_edge_2 = EdgeNumbers.EDGE_1
 		else:
 			c[0].v = Vector2(-h.x, h.y)
-			c[0].fp.e.in_edge_2 = EdgeNumbers.EDGE1
-			c[0].fp.e.out_edge_2 = EdgeNumbers.EDGE2
+			c[0].fp.e.in_edge_2 = EdgeNumbers.EDGE_1
+			c[0].fp.e.out_edge_2 = EdgeNumbers.EDGE_2
 
 			c[1].v = Vector2(-h.x, -h.y)
-			c[1].fp.e.in_edge_2 = EdgeNumbers.EDGE2
-			c[1].fp.e.out_edge_2 = EdgeNumbers.EDGE3
+			c[1].fp.e.in_edge_2 = EdgeNumbers.EDGE_2
+			c[1].fp.e.out_edge_2 = EdgeNumbers.EDGE_3
 	else:
-		if (sign(n.y) > 0):
+		if sign(n.y) > 0:
 			c[0].v = Vector2(h.x, h.y)
-			c[0].fp.e.in_edge_2 = EdgeNumbers.EDGE4
-			c[0].fp.e.out_edge_2 = EdgeNumbers.EDGE1
+			c[0].fp.e.in_edge_2 = EdgeNumbers.EDGE_4
+			c[0].fp.e.out_edge_2 = EdgeNumbers.EDGE_1
 
 			c[1].v = Vector2(-h.x, h.y)
-			c[1].fp.e.in_edge_2 = EdgeNumbers.EDGE1
-			c[1].fp.e.out_edge_2 = EdgeNumbers.EDGE2
+			c[1].fp.e.in_edge_2 = EdgeNumbers.EDGE_1
+			c[1].fp.e.out_edge_2 = EdgeNumbers.EDGE_2
 		else:
 			c[0].v = Vector2(-h.x, -h.y)
-			c[0].fp.e.in_edge_2 = EdgeNumbers.EDGE2
-			c[0].fp.e.out_edge_2 = EdgeNumbers.EDGE3
+			c[0].fp.e.in_edge_2 = EdgeNumbers.EDGE_2
+			c[0].fp.e.out_edge_2 = EdgeNumbers.EDGE_3
 
 			c[1].v = Vector2(h.x, -h.y)
-			c[1].fp.e.in_edge_2 = EdgeNumbers.EDGE3
-			c[1].fp.e.out_edge_2 = EdgeNumbers.EDGE4
+			c[1].fp.e.in_edge_2 = EdgeNumbers.EDGE_3
+			c[1].fp.e.out_edge_2 = EdgeNumbers.EDGE_4
 
 	c[0].v = pos + Rot * c[0].v
 	c[1].v = pos + Rot * c[1].v
 
 
 # The normal points from A to B.
-static func collide(p_contacts, var body_a, var body_b):
+static func collide(p_contacts, body_a, body_b):
 	# Setup.
-	var hA = 0.5 * body_a.width
-	var hB = 0.5 * body_b.width
+	var h_a = 0.5 * body_a.width
+	var h_b = 0.5 * body_b.width
 
-	var posA = body_a.position
-	var posB = body_b.position
+	var pos_a = body_a.position
+	var pos_b = body_b.position
 
-	var RotA = Transform2D(body_a.rotation, Vector2())
-	var RotB = Transform2D(body_b.rotation, Vector2())
+	var rot_a = Transform2D(body_a.rotation, Vector2())
+	var rot_b = Transform2D(body_b.rotation, Vector2())
 
-	var RotAT = RotA.inverse()
-	var RotBT = RotB.inverse()
+	var rot_at = rot_a.inverse()
+	var rot_bt = rot_b.inverse()
 
-	var dp = posB - posA
-	var dA = RotAT * dp
-	var dB = RotBT * dp
+	var dp = pos_b - pos_a
+	var d_a = rot_at * dp
+	var d_b = rot_bt * dp
 
-	var C = RotAT * RotB
-	var absC = Transform2D()
-	absC.x = C.x.abs()
-	absC.y = C.y.abs()
-	var absCT = absC.inverse()
+	var c = rot_at * rot_b
+	var abs_c = Transform2D()
+	abs_c.x = c.x.abs()
+	abs_c.y = c.y.abs()
+	var abs_ct = abs_c.inverse()
 
 	# Box A faces.
-	var faceA = dA.abs() - hA - absC * hB
-	if faceA.x > 0.0 or faceA.y > 0.0:
+	var face_a = d_a.abs() - h_a - abs_c * h_b
+	if face_a.x > 0.0 or face_a.y > 0.0:
 		return 0
 
 	# Box B faces.
-	var faceB = dB.abs() - absCT * hA - hB
-	if faceB.x > 0.0 or faceB.y > 0.0:
+	var face_b = d_b.abs() - abs_ct * h_a - h_b
+	if face_b.x > 0.0 or face_b.y > 0.0:
 		return 0
 
 	# Box A faces.
 	var axis = Axis.FACE_A_X
-	var separation = faceA.x
-	var normal = RotA.x if dA.x > 0.0 else -RotA.x
+	var separation = face_a.x
+	var normal = rot_a.x if d_a.x > 0.0 else -rot_a.x
 
 	var relative_tol = 0.95
 	var absolute_tol = 0.01
 
-	if faceA.y > relative_tol * separation + absolute_tol * hA.y:
+	if face_a.y > relative_tol * separation + absolute_tol * h_a.y:
 		axis = Axis.FACE_A_Y
-		separation = faceA.y
-		normal = RotA.y if dA.y > 0.0 else -RotA.y
+		separation = face_a.y
+		normal = rot_a.y if d_a.y > 0.0 else -rot_a.y
 
 	# Box B faces.
-	if faceB.x > relative_tol * separation + absolute_tol * hB.x:
+	if face_b.x > relative_tol * separation + absolute_tol * h_b.x:
 		axis = Axis.FACE_B_X
-		separation = faceB.x
-		normal = RotB.x if dB.x > 0.0 else -RotB.x
+		separation = face_b.x
+		normal = rot_b.x if d_b.x > 0.0 else -rot_b.x
 
-	if faceB.y > relative_tol * separation + absolute_tol * hB.y:
+	if face_b.y > relative_tol * separation + absolute_tol * h_b.y:
 		axis = Axis.FACE_B_Y
-		separation = faceB.y
-		normal = RotB.y if dB.y > 0.0 else -RotB.y
+		separation = face_b.y
+		normal = rot_b.y if d_b.y > 0.0 else -rot_b.y
 
 	# Setup clipping plane data based on the separating axis.
 	var front_normal
@@ -399,44 +399,44 @@ static func collide(p_contacts, var body_a, var body_b):
 	match axis:
 		Axis.FACE_A_X:
 			front_normal = normal
-			front = posA.dot(front_normal) + hA.x
-			side_normal = RotA.y
-			var side = posA.dot(side_normal)
-			neg_side = -side + hA.y
-			pos_side =  side + hA.y
-			neg_edge = EdgeNumbers.EDGE3
-			pos_edge = EdgeNumbers.EDGE1
-			compute_incident_edge(incident_edge, hB, posB, RotB, front_normal)
+			front = pos_a.dot(front_normal) + h_a.x
+			side_normal = rot_a.y
+			var side = pos_a.dot(side_normal)
+			neg_side = -side + h_a.y
+			pos_side =  side + h_a.y
+			neg_edge = EdgeNumbers.EDGE_3
+			pos_edge = EdgeNumbers.EDGE_1
+			compute_incident_edge(incident_edge, h_b, pos_b, rot_b, front_normal)
 		Axis.FACE_A_Y:
 			front_normal = normal
-			front = posA.dot(front_normal) + hA.y
-			side_normal = RotA.x
-			var side = posA.dot(side_normal)
-			neg_side = -side + hA.x
-			pos_side =  side + hA.x
-			neg_edge = EdgeNumbers.EDGE2
-			pos_edge = EdgeNumbers.EDGE4
-			compute_incident_edge(incident_edge, hB, posB, RotB, front_normal)
+			front = pos_a.dot(front_normal) + h_a.y
+			side_normal = rot_a.x
+			var side = pos_a.dot(side_normal)
+			neg_side = -side + h_a.x
+			pos_side =  side + h_a.x
+			neg_edge = EdgeNumbers.EDGE_2
+			pos_edge = EdgeNumbers.EDGE_4
+			compute_incident_edge(incident_edge, h_b, pos_b, rot_b, front_normal)
 		Axis.FACE_B_X:
 			front_normal = -normal
-			front = posB.dot(front_normal) + hB.x
-			side_normal = RotB.y
-			var side = posB.dot(side_normal)
-			neg_side = -side + hB.y
-			pos_side =  side + hB.y
-			neg_edge = EdgeNumbers.EDGE3
-			pos_edge = EdgeNumbers.EDGE1
-			compute_incident_edge(incident_edge, hA, posA, RotA, front_normal)
+			front = pos_b.dot(front_normal) + h_b.x
+			side_normal = rot_b.y
+			var side = pos_b.dot(side_normal)
+			neg_side = -side + h_b.y
+			pos_side =  side + h_b.y
+			neg_edge = EdgeNumbers.EDGE_3
+			pos_edge = EdgeNumbers.EDGE_1
+			compute_incident_edge(incident_edge, h_a, pos_a, rot_a, front_normal)
 		Axis.FACE_B_Y:
 			front_normal = -normal
-			front = posB.dot(front_normal) + hB.y
-			side_normal = RotB.x
-			var side = posB.dot(side_normal)
-			neg_side = -side + hB.x
-			pos_side =  side + hB.x
-			neg_edge = EdgeNumbers.EDGE2
-			pos_edge = EdgeNumbers.EDGE4
-			compute_incident_edge(incident_edge, hA, posA, RotA, front_normal)
+			front = pos_b.dot(front_normal) + h_b.y
+			side_normal = rot_b.x
+			var side = pos_b.dot(side_normal)
+			neg_side = -side + h_b.x
+			pos_side =  side + h_b.x
+			neg_edge = EdgeNumbers.EDGE_2
+			pos_edge = EdgeNumbers.EDGE_4
+			compute_incident_edge(incident_edge, h_a, pos_a, rot_a, front_normal)
 
 	# Clip other face with 5 box planes (1 face plane, 4 edge planes).
 	var clip_points_1 = []
