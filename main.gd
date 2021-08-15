@@ -69,7 +69,7 @@ func draw_text(p_text):
 	$UI/Info.text += p_text + "\n\n"
 
 
-func _draw():
+func draw_info_panel():
 	$UI/Info.text = ""
 
 	var demo_str = [
@@ -89,3 +89,17 @@ func _draw():
 	draw_text("(A)ccumulation %s" % "ON" if PhysicsWorld.accumulate_impulses else "OFF")
 	draw_text("(P)osition Correction %s" % "ON" if PhysicsWorld.position_correction else "OFF")
 	draw_text("(W)arm Starting %s" % "ON" if PhysicsWorld.warm_starting else "OFF")
+
+
+func draw_contact_points():
+	for arb in world.arbiters.values():
+		for contact in arb.contacts:
+			var c = Color.red
+			c.s = 0.85
+			draw_circle(contact.position, 0.075, c)
+
+
+func _draw():
+	draw_info_panel()
+	draw_contact_points()
+
