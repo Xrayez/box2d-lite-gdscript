@@ -362,6 +362,7 @@ func launch_bomb():
 		bomb = Box2DBody.new()
 		bomb.setup(Vector2(1, 1), 50)
 		bomb.friction = 0.2
+		bomb.set_meta("bomb", true)
 		world.add(bomb)
 
 	bomb.position = Vector2(rand_range(-15, 15), 15)

@@ -69,5 +69,8 @@ func _draw():
 		Vector2( h.x,  h.y),
 		Vector2(-h.x,  h.y),
 	]
+	var c = Color(0.8, 0.8, 0.9)
+	if has_meta("bomb"):
+		c = Color(0.4, 0.9, 0.4)
 	for i in 4:
-		draw_line(line[i], line[(i + 1) % 4], Color(0.8, 0.8, 0.9))
+		draw_line(line[i], line[(i + 1) % 4], c)
