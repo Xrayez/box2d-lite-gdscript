@@ -39,7 +39,6 @@ func demo_1():
 	b.position = Vector2(0, 4)
 	world.add(b)
 
-
 # A simple pendulum.
 func demo_2():
 	var b1 = Box2DBody.new()
@@ -59,7 +58,6 @@ func demo_2():
 	var j = Box2DJoint.new()
 	j.setup(b1, b2, Vector2(0, 11));
 	world.add(j);
-
 
 # Varying friction coefficients.
 func demo_3():
@@ -103,6 +101,23 @@ func demo_3():
 		b.friction = friction[i];
 		b.position = Vector2(-7.5 + 2.0 * i, 14.0)
 		world.add(b)
+
+# A vertical stack.
+func demo_4():
+	var b = Box2DBody.new()
+	b.setup(Vector2(100.0, 20.0), INF);
+	b.friction = 0.2;
+	b.position = Vector2(0.0, -0.5 * b.width.y);
+	b.rotation = 0.0;
+	world.add(b);
+
+	for i in 10:
+		b = Box2DBody.new()
+		b.setup(Vector2(1, 1), 1);
+		b.friction = 0.2;
+		var x = rand_range(-0.1, 0.1);
+		b.position = Vector2(x, 0.51 + 1.05 * i);
+		world.add(b);
 
 
 func launch_bomb():
