@@ -110,11 +110,14 @@ func _process(_delta):
 
 
 func _draw():
+	var r1 = Transform2D(body_1.rotation, Vector2())
+	var r2 = Transform2D(body_2.rotation, Vector2())
+
 	var x1 = body_1.position
-	var p1 = x1 + local_anchor_1
+	var p1 = x1 + r1 * local_anchor_1
 
 	var x2 = body_2.position
-	var p2 = x2 + local_anchor_2
+	var p2 = x2 + r2 * local_anchor_2
 
 	var lines = [
 		Vector2(x1.x, x1.y),
@@ -122,5 +125,5 @@ func _draw():
 		Vector2(x2.x, x2.y),
 		Vector2(p2.x, p2.y),
 	]
-	for i in 2:
+	for i in 3:
 		draw_line(lines[i], lines[i + 1], Color(0.5, 0.5, 0.8))
