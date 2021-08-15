@@ -44,8 +44,13 @@ _global_script_class_icons={
 
 [application]
 
+config/name="Box2D Lite"
+config/description="A GDScript port Box2D Lite."
 run/main_scene="res://main.tscn"
-config/icon="res://icon.png"
+boot_splash/image="res://logo.png"
+boot_splash/fullsize=false
+boot_splash/bg_color=Color( 0.160784, 0.164706, 0.176471, 1 )
+config/icon="res://logo.png"
 
 [autoload]
 
