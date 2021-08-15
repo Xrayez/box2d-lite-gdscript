@@ -33,13 +33,19 @@ _global_script_classes=[ {
 "class": "Collide",
 "language": "GDScript",
 "path": "res://collide.gd"
+}, {
+"base": "Reference",
+"class": "Math",
+"language": "GDScript",
+"path": "res://math_utils.gd"
 } ]
 _global_script_class_icons={
 "Box2DArbiter": "",
 "Box2DBody": "",
 "Box2DJoint": "",
 "Box2DWorld": "",
-"Collide": ""
+"Collide": "",
+"Math": ""
 }
 
 [application]
@@ -51,6 +57,12 @@ config/icon="res://icon.png"
 
 PhysicsWorld="*res://world.gd"
 
+[display]
+
+window/size/width=1280
+window/size/height=720
+
 [rendering]
 
+quality/driver/driver_name="GLES2"
 environment/default_clear_color=Color( 0, 0, 0, 1 )

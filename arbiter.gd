@@ -96,14 +96,6 @@ func update(new_contacts: Array, num_new_contacts: int):
 	num_contacts = num_new_contacts;
 
 
-static func cross_scalar(v: Vector2, s: float):
-	return Vector2(s * v.y, -s * v.x)
-
-
-static func cross_vector(s: float, v: Vector2):
-	return Vector2(-s * v.y, s * v.x)
-
-
 func pre_step(inv_dt: float):
 	var k_allowed_penetration = 0.01
 	var k_bias_factor = 0.2 if PhysicsWorld.position_correction else 0.0;
@@ -121,7 +113,7 @@ func pre_step(inv_dt: float):
 		k_normal += body_1.inv_I * (r1.dot(r1) - rn1 * rn1) + body_2.inv_I * (r2.dot(r2) - rn2 * rn2)
 		c.mass_normal = 1.0 / k_normal
 
-		var tangent = cross_scalar(c.normal, 1.0)
+		var tangent = Math.cross_scalar(c.normal, 1.0)
 		var rt1 = r1.dot(tangent)
 		var rt2 = r2.dot(tangent)
 		var k_tangent = body_1.inv_mass + body_2.inv_mass;
@@ -151,7 +143,7 @@ func apply_impulse():
 		c.r2 = c.position - b2.position
 
 		# Relative velocity at contact.
-		var dv = b2.velocity + cross_vector(b2.angular_velocity, c.r2) - b1.velocity - cross_vector(b1.angular_velocity, c.r1)
+		var dv = b2.velocity + Math.cross_vector(b2.angular_velocity, c.r2) - b1.velocity - Math.cross_vector(b1.angular_velocity, c.r1)
 
 		# Compute normal impulse.
 		var vn = dv.dot(c.normal);
@@ -176,9 +168,9 @@ func apply_impulse():
 		b2.angular_velocity += b2.inv_I * c.r2.cross(Pn)
 
 		# Relative velocity at contact.
-		dv = b2.velocity + cross_vector(b2.angular_velocity, c.r2) - b1.velocity - cross_vector(b1.angular_velocity, c.r1)
+		dv = b2.velocity + Math.cross_vector(b2.angular_velocity, c.r2) - b1.velocity - Math.cross_vector(b1.angular_velocity, c.r1)
 
-		var tangent = cross_scalar(c.normal, 1.0)
+		var tangent = Math.cross_scalar(c.normal, 1.0)
 		var vt = dv.dot(tangent)
 		var d_Pt = c.mass_tangent * (-vt)
 

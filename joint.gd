@@ -41,8 +41,8 @@ func setup(p_body_1, p_body_2, p_anchor: Vector2):
 
 func pre_step(inv_dt: float):
 	# Pre-compute anchors, mass matrix, and bias.
-	var Rot1 = Transform2D(body_1.rotation)
-	var Rot2 = Transform2D(body_2.rotation)
+	var Rot1 = Transform2D(body_1.rotation, Vector2())
+	var Rot2 = Transform2D(body_2.rotation, Vector2())
 
 	r1 = Rot1 * local_anchor_1
 	r2 = Rot2 * local_anchor_2
@@ -69,7 +69,7 @@ func pre_step(inv_dt: float):
 	K.x.x += softness;
 	K.y.y += softness;
 
-	M = K.inverse();
+	M = K.affine_inverse();
 
 	var p1 = body_1.position + r1;
 	var p2 = body_2.position + r2;
@@ -80,26 +80,47 @@ func pre_step(inv_dt: float):
 	else:
 		bias = Vector2()
 
-	if PhysicsWorld.warn_starting:
+	if PhysicsWorld.warm_starting:
 		# Apply accumulated impulse.
-		body_1.velocity -= body_1.invMass * P;
+		body_1.velocity -= body_1.inv_mass * P;
 		body_1.angular_velocity -= body_1.inv_I * r1.cross(P);
 
-		body_2.velocity += body_2.invMass * P;
+		body_2.velocity += body_2.inv_mass * P;
 		body_2.angular_velocity += body_2.inv_I * r2.cross(P);
 	else:
 		P = Vector2()
 
 
 func apply_impulse():
-	var dv = body_2.velocity + body_2.angular_velocity.cross(r2) - body_1.velocity - body_1.angular_velocity.cross(r1);
+	var dv = body_2.velocity + Math.cross_vector(body_2.angular_velocity, r2) - body_1.velocity - Math.cross_vector(body_1.angular_velocity, r1);
 
 	var impulse = M * (bias - dv - softness * P)
 
-	body_1.velocity -= body_1.invMass * impulse;
-	body_1.angular_velocity -= body_1.invI * r1.cross(impulse);
+	body_1.velocity -= body_1.inv_mass * impulse;
+	body_1.angular_velocity -= body_1.inv_I * r1.cross(impulse);
 
-	body_2.velocity += body_2.invMass * impulse;
-	body_2.angular_velocity += body_2.invI * r2.cross(impulse);
+	body_2.velocity += body_2.inv_mass * impulse;
+	body_2.angular_velocity += body_2.inv_I * r2.cross(impulse);
 
 	P += impulse;
+
+
+func _process(_delta):
+	update()
+
+
+func _draw():
+	var x1 = body_1.position
+	var p1 = x1 + local_anchor_1
+
+	var x2 = body_2.position
+	var p2 = x2 + local_anchor_2
+
+	var lines = [
+		Vector2(x1.x, x1.y),
+		Vector2(p1.x, p1.y),
+		Vector2(x2.x, x2.y),
+		Vector2(p2.x, p2.y),
+	]
+	for i in 2:
+		draw_line(lines[i], lines[i + 1], Color(0.5, 0.5, 0.8))

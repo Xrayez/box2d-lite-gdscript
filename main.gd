@@ -16,7 +16,7 @@ func _ready():
 
 	$Camera2D.offset_v = 0.1
 
-	init_demo(1)
+	init_demo(2)
 
 
 func init_demo(index: int):
@@ -30,13 +30,33 @@ func init_demo(index: int):
 func demo_1():
 	var b = Box2DBody.new()
 	b.setup(Vector2(100, 20), INF)
-	b.position = Vector2(0.0, -0.5 * b.width.y)
+	b.position = Vector2(0, -0.5 * b.width.y)
 	world.add(b)
 
 	b = Box2DBody.new()
 	b.setup(Vector2(1, 1), 200)
 	b.position = Vector2(0, 4)
 	world.add(b)
+
+
+func demo_2():
+	var b1 = Box2DBody.new()
+	b1.setup(Vector2(100, 20), INF);
+	b1.friction = 0.2;
+	b1.position = Vector2(0, -0.5 * b1.width.y);
+	b1.rotation = 0;
+	world.add(b1);
+
+	var b2 = Box2DBody.new()
+	b2.setup(Vector2(1, 1), 100);
+	b2.friction = 0.2;
+	b2.position = Vector2(9.0, 11.0)
+	b2.rotation = 0;
+	world.add(b2);
+
+	var j = Box2DJoint.new()
+	j.setup(b1, b2, Vector2(0, 11));
+	world.add(j);
 
 
 func _physics_process(_delta):
@@ -86,9 +106,9 @@ func draw_info_panel():
 
 	draw_text(demo_str)
 	draw_text("Keys: 1-9 Demos, Space to Launch the Bomb")
-	draw_text("(A)ccumulation %s" % "ON" if PhysicsWorld.accumulate_impulses else "OFF")
-	draw_text("(P)osition Correction %s" % "ON" if PhysicsWorld.position_correction else "OFF")
-	draw_text("(W)arm Starting %s" % "ON" if PhysicsWorld.warm_starting else "OFF")
+	draw_text("(A)ccumulation %s" % ("ON" if PhysicsWorld.accumulate_impulses else "OFF"))
+	draw_text("(P)osition Correction %s" % ("ON" if PhysicsWorld.position_correction else "OFF"))
+	draw_text("(W)arm Starting %s" % ("ON" if PhysicsWorld.warm_starting else "OFF"))
 
 
 func draw_contact_points():

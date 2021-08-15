@@ -62,7 +62,6 @@ func _process(_delta):
 
 
 func _draw():
-	# From samples/main.cpp::DrawBody.
 	var h = 0.5 * width
 	var line = [
 		Vector2(-h.x, -h.y),
