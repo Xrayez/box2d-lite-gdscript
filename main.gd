@@ -425,10 +425,10 @@ func draw_info_panel():
 
 func draw_contact_points():
 	for arb in world.arbiters.values():
-		for contact in arb.contacts:
+		for i in arb.num_contacts:
 			var c = Color.red
 			c.s = 0.85
-			draw_circle(contact.position, 0.075, c)
+			draw_circle(arb.contacts[i].position, 0.075, c)
 
 
 func _draw():
