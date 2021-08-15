@@ -59,6 +59,19 @@ func demo_2():
 	world.add(j);
 
 
+func launch_bomb():
+	if not is_instance_valid(bomb):
+		bomb = Box2DBody.new()
+		bomb.setup(Vector2(1, 1), 50)
+		bomb.friction = 0.2
+		world.add(bomb)
+
+	bomb.position = Vector2(rand_range(-15, 15), 15)
+	bomb.rotation = rand_range(-1.5, 1.5)
+	bomb.velocity = -1.5 * bomb.position
+	bomb.angular_velocity = rand_range(-20, 20)
+
+
 func _physics_process(_delta):
 	world.step(time_step)
 	update()
@@ -82,7 +95,7 @@ func _input(event):
 				KEY_P: PhysicsWorld.position_correction = not PhysicsWorld.position_correction
 				KEY_W: PhysicsWorld.warm_starting = not PhysicsWorld.warm_starting
 
-#				KEY_SPACE: launch_bomb()
+				KEY_SPACE: launch_bomb()
 
 
 func draw_text(p_text):
@@ -96,7 +109,7 @@ func draw_info_panel():
 		"Demo 1: A Single Box",
 		"Demo 2: Simple Pendulum",
 		"Demo 3: Varying Friction Coefficients",
-		"Demo 4: Randomized Stacking",
+		"Demo 4: rand_rangeized Stacking",
 		"Demo 5: Pyramid Stacking",
 		"Demo 6: A Teeter",
 		"Demo 7: A Suspension Bridge",
