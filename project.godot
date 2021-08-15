@@ -1,0 +1,56 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Reference",
+"class": "Box2DArbiter",
+"language": "GDScript",
+"path": "res://arbiter.gd"
+}, {
+"base": "Node2D",
+"class": "Box2DBody",
+"language": "GDScript",
+"path": "res://body.gd"
+}, {
+"base": "Node2D",
+"class": "Box2DJoint",
+"language": "GDScript",
+"path": "res://joint.gd"
+}, {
+"base": "Node",
+"class": "Box2DWorld",
+"language": "GDScript",
+"path": "res://world.gd"
+}, {
+"base": "Reference",
+"class": "Collide",
+"language": "GDScript",
+"path": "res://collide.gd"
+} ]
+_global_script_class_icons={
+"Box2DArbiter": "",
+"Box2DBody": "",
+"Box2DJoint": "",
+"Box2DWorld": "",
+"Collide": ""
+}
+
+[application]
+
+run/main_scene="res://main.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+PhysicsWorld="*res://world.gd"
+
+[rendering]
+
+environment/default_clear_color=Color( 0, 0, 0, 1 )
