@@ -324,7 +324,7 @@ static func compute_incident_edge(c: Array, h: Vector2, pos: Vector2, Rot: Trans
 
 
 # The normal points from A to B.
-static func collide(contacts, var body_a, var body_b):
+static func collide(p_contacts, var body_a, var body_b):
 	# Setup.
 	var hA = 0.5 * body_a.width
 	var hB = 0.5 * body_b.width
@@ -458,17 +458,17 @@ static func collide(contacts, var body_a, var body_b):
 
 	# Now clip_points_2 contains the clipping points..
 	# Due to roundoff, it is possible that clipping removes all points..
-	var num_contacts = 0
+	var count = 0
 	for i in 2:
 		var sep = front_normal.dot(clip_points_2[i].v) - front
 		if sep <= 0:
-			contacts[num_contacts].separation = sep
-			contacts[num_contacts].normal = normal
+			p_contacts[count].separation = sep
+			p_contacts[count].normal = normal
 			# Slide contact point onto reference face (easy to cull).
-			contacts[num_contacts].position = clip_points_2[i].v - sep * front_normal
-			contacts[num_contacts].feature = clip_points_2[i].fp
+			p_contacts[count].position = clip_points_2[i].v - sep * front_normal
+			p_contacts[count].feature = clip_points_2[i].fp
 			if axis == Axis.FACE_B_X or axis == Axis.FACE_B_Y:
-				flip(contacts[num_contacts].feature)
-			num_contacts += 1
+				flip(p_contacts[count].feature)
+			count += 1
 
-	return num_contacts
+	return count
