@@ -1,4 +1,4 @@
-class_name Box2DWorld extends Node
+class_name Box2DWorld extends Node2D
 
 var bodies: Array
 var joints: Array
@@ -17,11 +17,18 @@ func add(p_object):
 		bodies.push_back(p_object)
 	elif p_object is Box2DJoint:
 		joints.push_back(p_object)
+	add_child(p_object)
 
 
 func clear():
+	for b in bodies:
+		b.queue_free()
 	bodies.clear()
+
+	for j in joints:
+		j.queue_free()
 	joints.clear()
+
 	arbiters.clear()
 
 

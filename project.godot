@@ -24,7 +24,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://joint.gd"
 }, {
-"base": "Node",
+"base": "Node2D",
 "class": "Box2DWorld",
 "language": "GDScript",
 "path": "res://world.gd"
