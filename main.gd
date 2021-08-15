@@ -41,6 +41,12 @@ func _ready():
 	world.add(b)
 	add_child(b)
 
+	b = Box2DBody.new()
+	b.setup(Vector2(1, 1), 200)
+	b.position = Vector2(0.5, 2)
+	world.add(b)
+	add_child(b)
+
 
 func _physics_process(delta):
 	world.step(time_step)

@@ -8,7 +8,7 @@ var gravity: Vector2
 var iterations: int
 
 var accumulate_impulses = true
-var warn_starting = true
+var warm_starting = true
 var position_correction = true
 
 
