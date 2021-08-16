@@ -4,8 +4,8 @@ var bodies: Array
 var joints: Array
 var arbiters: Dictionary
 
-var gravity: Vector2
-var iterations: int
+export var gravity = Vector2(0, -10)
+export var iterations = 10
 
 var accumulate_impulses = true
 var warm_starting = true

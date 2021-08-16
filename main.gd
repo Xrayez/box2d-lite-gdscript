@@ -1,17 +1,11 @@
 extends Node2D
 
-export var gravity = Vector2(0, -10)
-export var iterations = 10
-
 onready var world = $Box2DWorld
 var bomb: Box2DBody = null
 var demo_index = 1
 
 
 func _ready():
-	world.gravity = gravity
-	world.iterations = iterations
-
 	$Camera2D.offset_v = 0.11
 
 	init_demo(1)
