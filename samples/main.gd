@@ -374,24 +374,23 @@ func _process(_delta):
 
 
 func _input(event):
-	if event is InputEventKey:
-		if event.pressed and not event.echo:
-			match event.scancode:
-				KEY_1: init_demo(1)
-				KEY_2: init_demo(2)
-				KEY_3: init_demo(3)
-				KEY_4: init_demo(4)
-				KEY_5: init_demo(5)
-				KEY_6: init_demo(6)
-				KEY_7: init_demo(7)
-				KEY_8: init_demo(8)
-				KEY_9: init_demo(9)
+	if event is InputEventKey and event.pressed and not event.echo:
+		match event.scancode:
+			KEY_1: init_demo(1)
+			KEY_2: init_demo(2)
+			KEY_3: init_demo(3)
+			KEY_4: init_demo(4)
+			KEY_5: init_demo(5)
+			KEY_6: init_demo(6)
+			KEY_7: init_demo(7)
+			KEY_8: init_demo(8)
+			KEY_9: init_demo(9)
 
-				KEY_A: PhysicsWorld.accumulate_impulses = not PhysicsWorld.accumulate_impulses
-				KEY_P: PhysicsWorld.position_correction = not PhysicsWorld.position_correction
-				KEY_W: PhysicsWorld.warm_starting = not PhysicsWorld.warm_starting
+			KEY_A: PhysicsWorld.accumulate_impulses = not PhysicsWorld.accumulate_impulses
+			KEY_P: PhysicsWorld.position_correction = not PhysicsWorld.position_correction
+			KEY_W: PhysicsWorld.warm_starting = not PhysicsWorld.warm_starting
 
-				KEY_SPACE: launch_bomb()
+			KEY_SPACE: launch_bomb()
 
 
 func draw_text(p_text):
