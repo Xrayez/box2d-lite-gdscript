@@ -124,13 +124,13 @@ func pre_step(inv_dt: float):
 
 		if PhysicsWorld.accumulate_impulses:
 			# Apply normal + friction impulse
-			var P = c.pn * c.normal + c.pt * tangent
+			var p = c.pn * c.normal + c.pt * tangent
 
-			body_1.velocity -= body_1.inv_mass * P
-			body_1.angular_velocity -= body_1.inv_inertia * r1.cross(P)
+			body_1.velocity -= body_1.inv_mass * p
+			body_1.angular_velocity -= body_1.inv_inertia * r1.cross(p)
 
-			body_2.velocity += body_2.inv_mass * P
-			body_2.angular_velocity += body_2.inv_inertia * r2.cross(P)
+			body_2.velocity += body_2.inv_mass * p
+			body_2.angular_velocity += body_2.inv_inertia * r2.cross(p)
 
 
 func apply_impulse():
@@ -277,11 +277,11 @@ static func clip_segment_to_line(v_out: Array, v_in: Array, normal: Vector2, off
 	return num_out
 
 
-static func compute_incident_edge(c: Array, h: Vector2, pos: Vector2, Rot: Transform2D, normal: Vector2):
+static func compute_incident_edge(c: Array, h: Vector2, pos: Vector2, rot: Transform2D, normal: Vector2):
 	# The normal is from the reference box. Convert it
-	# to the incident boxe's frame and flip sign.
-	var RotT = Rot.inverse()
-	var n = -(RotT * normal)
+	# to the incident frame of the box and flip sign.
+	var rot_t = rot.inverse()
+	var n = -(rot_t * normal)
 	var n_abs = n.abs()
 
 	if n_abs.x > n_abs.y:
@@ -319,8 +319,8 @@ static func compute_incident_edge(c: Array, h: Vector2, pos: Vector2, Rot: Trans
 			c[1].fp.e.in_edge_2 = EdgeNumbers.EDGE_3
 			c[1].fp.e.out_edge_2 = EdgeNumbers.EDGE_4
 
-	c[0].v = pos + Rot * c[0].v
-	c[1].v = pos + Rot * c[1].v
+	c[0].v = pos + rot * c[0].v
+	c[1].v = pos + rot * c[1].v
 
 
 # The normal points from A to B.
