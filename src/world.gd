@@ -35,19 +35,19 @@ func clear():
 func broad_phase():
 	# O(n^2) broad-phase.
 	for i in range(0, bodies.size()):
-		var bi = bodies[i]
+		var body_a = bodies[i]
 
 		for j in range(i + 1, bodies.size()):
-			var bj = bodies[j]
+			var body_b = bodies[j]
 
-			if bi.inv_mass == 0.0 && bj.inv_mass == 0.0:
+			if body_a.inv_mass == 0.0 and body_b.inv_mass == 0.0:
 				continue
 
-			var new_arb = Box2DArbiter.new(bi, bj)
-			var key = Box2DArbiter.Key.new(bi, bj).id
+			var new_arb = Box2DArbiter.new(body_a, body_b) # Narrow-phase.
+			var key = Box2DArbiter.Key.new(body_a, body_b).id
 
 			if new_arb.num_contacts > 0:
-				if !arbiters.has(key):
+				if not key in arbiters:
 					arbiters[key] = new_arb
 				else:
 					arbiters[key].update(new_arb.contacts, new_arb.num_contacts)
@@ -62,35 +62,30 @@ func step(dt: float):
 	broad_phase()
 
 	# Integrate forces.
-	for i in bodies.size():
-		var b = bodies[i]
-
-		if b.inv_mass == 0.0:
+	for body in bodies:
+		if body.inv_mass == 0.0:
 			continue
-
-		b.velocity += dt * (gravity + b.inv_mass * b.force)
-		b.angular_velocity += dt * b.inv_inertia * b.torque
+		body.velocity += dt * (gravity + body.inv_mass * body.force)
+		body.angular_velocity += dt * body.inv_inertia * body.torque
 
 	# Perform pre-steps.
 	for arb in arbiters.values():
 		arb.pre_step(inv_dt)
 
-	for i in joints.size():
-		joints[i].pre_step(inv_dt)
+	for joint in joints:
+		joint.pre_step(inv_dt)
 
 	# Perform iterations.
 	for i in iterations:
 		for arb in arbiters.values():
 			arb.apply_impulse()
-		for j in joints.size():
-			joints[j].apply_impulse()
+		for joint in joints:
+			joint.apply_impulse()
 
 	# Integrate velocities.
-	for i in bodies.size():
-		var b = bodies[i]
+	for body in bodies:
+		body.position += dt * body.velocity
+		body.rotation += dt * body.angular_velocity
 
-		b.position += dt * b.velocity
-		b.rotation += dt * b.angular_velocity
-
-		b.force = Vector2(0, 0)
-		b.torque = 0.0
+		body.force = Vector2(0, 0)
+		body.torque = 0.0

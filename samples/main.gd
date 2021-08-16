@@ -6,8 +6,6 @@ var demo_index = 1
 
 
 func _ready():
-	$Camera2D.offset_v = 0.11
-
 	init_demo(1)
 
 
@@ -16,6 +14,9 @@ func init_demo(index: int):
 	if is_instance_valid(bomb):
 		bomb.queue_free()
 		bomb = null
+
+	$Camera2D.position = Vector2()
+	$Camera2D.offset_v = 0.11
 
 	demo_index = index
 	call("demo_%s" % demo_index)
@@ -317,16 +318,16 @@ func demo_9():
 	var frequency_hz = 4.0
 	var damping_ratio = 0.7
 
-	# frequency in radians.
+	# Frequency in radians.
 	var omega = 2.0 * PI * frequency_hz
 
-	# damping coefficient.
+	# Damping coefficient.
 	var d = 2.0 * mass * damping_ratio * omega
 
-	# spring stiffness.
+	# Spring stiffness.
 	var k = mass * omega * omega
 
-	# magic formulas.
+	# Magic formulas.
 	var time_step = get_physics_process_delta_time()
 	var softness = 1.0 / (d + time_step * k)
 	var bias_factor = time_step * k / (d + time_step * k)
@@ -367,7 +368,7 @@ func launch_bomb():
 
 # Process as fast as possible, but use _physics_process() delta time instead.
 # This emulates Box2D Lite's main loop.
-func _process(delta):
+func _process(_delta):
 	world.step(get_physics_process_delta_time())
 	update()
 
@@ -404,7 +405,7 @@ func draw_info_panel():
 		"Demo 1: A Single Box",
 		"Demo 2: Simple Pendulum",
 		"Demo 3: Varying Friction Coefficients",
-		"Demo 4: rand_rangeized Stacking",
+		"Demo 4: Randomized Stacking",
 		"Demo 5: Pyramid Stacking",
 		"Demo 6: A Teeter",
 		"Demo 7: A Suspension Bridge",

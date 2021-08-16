@@ -25,8 +25,8 @@ class Contact:
 
 class Key:
 	var id
-
 	func _init(b1, b2):
+		# Sorting like this is needed to avoid duplicate collision pairs.
 		if b1.get_instance_id() < b2.get_instance_id():
 			id = [b1.get_instance_id(), b2.get_instance_id()]
 		else:

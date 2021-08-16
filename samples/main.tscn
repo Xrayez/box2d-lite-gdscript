@@ -18,6 +18,9 @@ script = ExtResource( 3 )
 current = true
 zoom = Vector2( 0.027, -0.027 )
 offset_v = 0.11
+__meta__ = {
+"_editor_description_": "In Box2D-Lite, the Y positive axis points up, so we make a little hack to invert rendering in Godot by negating zoom's Y value!"
+}
 
 [node name="UI" type="CanvasLayer" parent="."]
 offset = Vector2( 10, 10 )
