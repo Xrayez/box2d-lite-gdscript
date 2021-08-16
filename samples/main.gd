@@ -366,10 +366,8 @@ func launch_bomb():
 	bomb.angular_velocity = rand_range(-20, 20)
 
 
-# Process as fast as possible, but use _physics_process() delta time instead.
-# This emulates Box2D Lite's main loop.
-func _process(_delta):
-	world.step(get_physics_process_delta_time())
+func _physics_process(delta):
+	world.step(delta)
 	update()
 
 
