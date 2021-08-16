@@ -12,27 +12,27 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "Box2DArbiter",
 "language": "GDScript",
-"path": "res://arbiter.gd"
+"path": "res://src/arbiter.gd"
 }, {
 "base": "Node2D",
 "class": "Box2DBody",
 "language": "GDScript",
-"path": "res://body.gd"
+"path": "res://src/body.gd"
 }, {
 "base": "Node2D",
 "class": "Box2DJoint",
 "language": "GDScript",
-"path": "res://joint.gd"
+"path": "res://src/joint.gd"
 }, {
 "base": "Node2D",
 "class": "Box2DWorld",
 "language": "GDScript",
-"path": "res://world.gd"
+"path": "res://src/world.gd"
 }, {
 "base": "Reference",
 "class": "Math",
 "language": "GDScript",
-"path": "res://math_utils.gd"
+"path": "res://src/math_utils.gd"
 } ]
 _global_script_class_icons={
 "Box2DArbiter": "",
@@ -46,7 +46,7 @@ _global_script_class_icons={
 
 config/name="Box2D Lite"
 config/description="A GDScript port Box2D Lite."
-run/main_scene="res://main.tscn"
+run/main_scene="res://samples/main.tscn"
 boot_splash/image="res://logo.png"
 boot_splash/fullsize=false
 boot_splash/bg_color=Color( 0.160784, 0.164706, 0.176471, 1 )
@@ -54,7 +54,7 @@ config/icon="res://logo.png"
 
 [autoload]
 
-PhysicsWorld="*res://world.gd"
+PhysicsWorld="*res://src/world.gd"
 
 [display]
 

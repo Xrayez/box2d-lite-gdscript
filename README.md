@@ -2,13 +2,14 @@
 
 This is a GDScript port of
 [Box2D-Lite](https://github.com/erincatto/box2d-lite) library: a small 2D
-physics engine written by Erin Catto.
+physics engine written by Erin Catto. Compatible with
+[Godot Engine](https://godotengine.org/) 3.x.
 
 As the name suggests, this is not a full rewrite of the larger
 [Box2D](https://box2d.org/) library in GDScript, but the original version of
-Box2D mostly suitable for learning purposes.
+Box2D which is mostly suitable for learning purposes.
 
-![Box2D-Lite demos](demos.png)
+![Box2D-Lite Demos](samples/img/demos.png)
 
 ## Usage
 
@@ -26,11 +27,12 @@ Box2D mostly suitable for learning purposes.
 The port is mostly equivalent to
 [Box2D-Lite](https://github.com/erincatto/box2d-lite), with `World`, `Box`,
 `Joint` classes all extending `Node2D` (they are prefixed with `Box2D` name in
-GDScript). Collision code is merged into `Box2DArbiter`, otherwise this would
-produce cyclic reference errors in GDScript.
+GDScript), see [`src/`](src/) directory. Collision code is merged into
+`arbiter.gd`, otherwise this would produce cyclic reference errors in
+GDScript.
 
 All demos are also ported from the original C++ implementation with little to no
-changes, see [`main.gd`](main.gd).
+changes, see [`samples/main.gd`](samples/main.gd).
 
 ### Coordinate system
 
@@ -42,10 +44,11 @@ request.
 
 ### Performance
 
-Because GDScript is dynamically typed, note that some demos are extremely slow
-to run compared to original implementation written in C++ (namely `Demo 5` and
-`Demo 8`). The bottleneck also comes from the simplified broad-phase algorithm
-in Box2D-Lite which uses brute-force O(n^2) implementation.
+Because GDScript is dynamically typed, some demos may be extremely slow to run
+compared to original implementation written in C++ (namely
+`Demo 5: Pyramid Stacking`). The bottleneck also comes from the simplified
+broad-phase algorithm in Box2D-Lite which uses brute-force O(n^2)
+implementation.
 
 Depending on the complexity, a better broad-phase algorithm could be implemented
 in the future, but not in a way which would make the existing implementation no
@@ -62,8 +65,7 @@ The [Box2D-Lite](https://github.com/erincatto/box2d-lite) library from which
 this port was created is available under the MIT license by Erin Catto (not
 distributed in this repository), see [COPYRIGHT.txt](COPYRIGHT.txt).
 
-The logo image [logo.png](logo.png) is
-copyright of Box2D.
+The logo image [logo.png](logo.png) is copyright of Erin Catto.
 
 The project uses `ProggyClean.ttf` font to render informational panel used by
 the original Box2D-Lite drawing library released under MIT license, see
