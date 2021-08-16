@@ -1,12 +1,10 @@
 extends Node2D
 
+export var gravity = Vector2(0, -10)
+export var iterations = 10
+
 onready var world = $Box2DWorld
 var bomb: Box2DBody = null
-
-var time_step = 1.0 / 60.0
-var iterations = 10
-var gravity = Vector2(0, -10)
-
 var demo_index = 1
 
 
@@ -216,6 +214,7 @@ func demo_7():
 	var k = mass * omega * omega
 
 	# Magic formulas.
+	var time_step = get_physics_process_delta_time()
 	var softness = 1.0 / (d + time_step * k)
 	var bias_factor = time_step * k / (d + time_step * k)
 
@@ -334,6 +333,7 @@ func demo_9():
 	var k = mass * omega * omega
 
 	# magic formulas.
+	var time_step = get_physics_process_delta_time()
 	var softness = 1.0 / (d + time_step * k)
 	var bias_factor = time_step * k / (d + time_step * k)
 
@@ -371,8 +371,10 @@ func launch_bomb():
 	bomb.angular_velocity = rand_range(-20, 20)
 
 
-func _physics_process(_delta):
-	world.step(time_step)
+# Process as fast as possible, but use _physics_process() delta time instead.
+# This emulates Box2D Lite's main loop.
+func _process(delta):
+	world.step(get_physics_process_delta_time())
 	update()
 
 
