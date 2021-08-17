@@ -82,7 +82,10 @@ func pre_step(inv_dt: float):
 
 
 func apply_impulse():
-	var dv = body_2.velocity + Math.cross_vector(body_2.angular_velocity, r2) - body_1.velocity - Math.cross_vector(body_1.angular_velocity, r1)
+	# Relative velocity at contact.
+	var cr_1 = Vector2(-body_1.angular_velocity * r1.y, body_1.angular_velocity * r1.x)
+	var cr_2 = Vector2(-body_2.angular_velocity * r2.y, body_2.angular_velocity * r2.x)
+	var dv = body_2.velocity + cr_2 - body_1.velocity - cr_1
 
 	var impulse = m * (bias - dv - softness * p)
 

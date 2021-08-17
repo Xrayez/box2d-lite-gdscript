@@ -143,7 +143,9 @@ func apply_impulse():
 		c.r2 = c.position - b2.position
 
 		# Relative velocity at contact.
-		var dv = b2.velocity + Math.cross_vector(b2.angular_velocity, c.r2) - b1.velocity - Math.cross_vector(b1.angular_velocity, c.r1)
+		var cr_1 = Vector2(-b1.angular_velocity * c.r1.y, b1.angular_velocity * c.r1.x)
+		var cr_2 = Vector2(-b2.angular_velocity * c.r2.y, b2.angular_velocity * c.r2.x)
+		var dv = b2.velocity + cr_2 - b1.velocity - cr_1
 
 		# Compute normal impulse.
 		var vn = dv.dot(c.normal)
@@ -168,7 +170,9 @@ func apply_impulse():
 		b2.angular_velocity += b2.inv_inertia * c.r2.cross(pn)
 
 		# Relative velocity at contact.
-		dv = b2.velocity + Math.cross_vector(b2.angular_velocity, c.r2) - b1.velocity - Math.cross_vector(b1.angular_velocity, c.r1)
+		cr_1 = Vector2(-b1.angular_velocity * c.r1.y, b1.angular_velocity * c.r1.x)
+		cr_2 = Vector2(-b2.angular_velocity * c.r2.y, b2.angular_velocity * c.r2.x)
+		dv = b2.velocity + cr_2 - b1.velocity - cr_1
 
 		var tangent = c.normal.tangent()
 		var vt = dv.dot(tangent)

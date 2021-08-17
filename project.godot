@@ -28,18 +28,12 @@ _global_script_classes=[ {
 "class": "Box2DWorld",
 "language": "GDScript",
 "path": "res://src/world.gd"
-}, {
-"base": "Reference",
-"class": "Math",
-"language": "GDScript",
-"path": "res://src/math_utils.gd"
 } ]
 _global_script_class_icons={
 "Box2DArbiter": "",
 "Box2DBody": "",
 "Box2DJoint": "",
-"Box2DWorld": "",
-"Math": ""
+"Box2DWorld": ""
 }
 
 [application]
