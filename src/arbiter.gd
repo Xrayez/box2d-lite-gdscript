@@ -113,7 +113,7 @@ func pre_step(inv_dt: float):
 		k_normal += body_1.inv_inertia * (r1.dot(r1) - rn1 * rn1) + body_2.inv_inertia * (r2.dot(r2) - rn2 * rn2)
 		c.mass_normal = 1.0 / k_normal
 
-		var tangent = Math.cross_scalar(c.normal, 1.0)
+		var tangent = c.normal.tangent()
 		var rt1 = r1.dot(tangent)
 		var rt2 = r2.dot(tangent)
 		var k_tangent = body_1.inv_mass + body_2.inv_mass
@@ -170,7 +170,7 @@ func apply_impulse():
 		# Relative velocity at contact.
 		dv = b2.velocity + Math.cross_vector(b2.angular_velocity, c.r2) - b1.velocity - Math.cross_vector(b1.angular_velocity, c.r1)
 
-		var tangent = Math.cross_scalar(c.normal, 1.0)
+		var tangent = c.normal.tangent()
 		var vt = dv.dot(tangent)
 		var dpt = c.mass_tangent * (-vt)
 
