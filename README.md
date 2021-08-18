@@ -48,13 +48,15 @@ Because GDScript is dynamically typed, some demos may be extremely slow to run
 compared to original implementation written in C++ (namely
 `Demo 5: Pyramid Stacking`). The bottleneck also comes from the simplified
 broad-phase algorithm in Box2D-Lite which uses brute-force O(n^2)
-implementation.
+implementation. Due to this, this port also implements basic spatial
+partitioning using a grid for the broad-phase stage alongside the original
+implementation (enabled by default).
 
-Depending on the complexity, a better broad-phase algorithm could be implemented
-in the future, but not in a way which would make the existing implementation no
-longer "lite". In any case, this is an opportunity for you to implement a better
-broad-phase algorithm for learning purposes, which is the direct reason why this
-port exists in the first place!
+Depending on the complexity, better algorithms could be implemented in the
+future, but not in a way which would make the existing implementation no longer
+"lite". In any case, this is an opportunity for you to implement collision
+checking algorithms for learning purposes for your own needs, which is the
+direct reason why this port exists in the first place!
 
 # License
 

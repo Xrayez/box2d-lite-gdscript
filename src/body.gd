@@ -45,6 +45,24 @@ func _process(_delta):
 	update()
 
 
+func get_bounding_rect():
+	var h = 0.5 * width
+	var vertices = PoolVector2Array([
+		Vector2(-h.x, -h.y),
+		Vector2( h.x, -h.y),
+		Vector2( h.x,  h.y),
+		Vector2(-h.x,  h.y),
+	])
+	vertices = get_transform().xform(vertices)
+	var rect
+	for i in vertices.size():
+		if i == 0:
+			rect = Rect2(vertices[i], Vector2())
+		else:
+			rect = rect.expand(vertices[i])
+	return rect
+
+
 func _draw():
 	var h = 0.5 * width
 	var line = [

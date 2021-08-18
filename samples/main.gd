@@ -1,5 +1,8 @@
 extends Node2D
 
+export var show_contacts = true
+export var show_bounding_rects = false
+
 onready var world = $Box2DWorld
 var bomb: Box2DBody = null
 var demo_index = 1
@@ -25,7 +28,7 @@ func init_demo(index: int):
 # Single box.
 func demo_1():
 	var b = Box2DBody.new()
-	b.setup(Vector2(100, 20), INF)
+	b.setup(Vector2(50, 3), INF)
 	b.position = Vector2(0, -0.5 * b.width.y)
 	world.add(b)
 
@@ -38,7 +41,7 @@ func demo_1():
 # A simple pendulum.
 func demo_2():
 	var b1 = Box2DBody.new()
-	b1.setup(Vector2(100, 20), INF)
+	b1.setup(Vector2(50, 3), INF)
 	b1.friction = 0.2
 	b1.position = Vector2(0, -0.5 * b1.width.y)
 	b1.rotation = 0
@@ -59,7 +62,7 @@ func demo_2():
 # Varying friction coefficients.
 func demo_3():
 	var b = Box2DBody.new()
-	b.setup(Vector2(100.0, 20.0), INF)
+	b.setup(Vector2(50, 3), INF)
 	b.position = Vector2(0.0, -0.5 * b.width.y)
 	world.add(b)
 
@@ -103,7 +106,7 @@ func demo_3():
 # A vertical stack.
 func demo_4():
 	var b = Box2DBody.new()
-	b.setup(Vector2(100.0, 20.0), INF)
+	b.setup(Vector2(50, 3), INF)
 	b.friction = 0.2
 	b.position = Vector2(0.0, -0.5 * b.width.y)
 	b.rotation = 0.0
@@ -121,7 +124,7 @@ func demo_4():
 # A pyramid.
 func demo_5():
 	var b = Box2DBody.new()
-	b.setup(Vector2(100.0, 20.0), INF)
+	b.setup(Vector2(50, 3), INF)
 	b.friction = 0.2
 	b.position = Vector2(0.0, -0.5 * b.width.y)
 	b.rotation = 0.0
@@ -147,7 +150,7 @@ func demo_5():
 # A teeter.
 func demo_6():
 	var b1 = Box2DBody.new()
-	b1.setup(Vector2(100.0, 20.0), INF)
+	b1.setup(Vector2(50, 3), INF)
 	b1.position = Vector2(0.0, -0.5 * b1.width.y)
 	world.add(b1)
 
@@ -179,7 +182,7 @@ func demo_6():
 # A suspension bridge.
 func demo_7():
 	var b = Box2DBody.new()
-	b.setup(Vector2(100.0, 20.0), INF)
+	b.setup(Vector2(50, 3), INF)
 	b.friction = 0.2
 	b.position = Vector2(0.0, -0.5 * b.width.y)
 	b.rotation = 0.0
@@ -231,7 +234,7 @@ func demo_7():
 func demo_8():
 	var b = Box2DBody.new()
 	var b1 = b
-	b.setup(Vector2(100.0, 20.0), INF)
+	b.setup(Vector2(50, 3), INF)
 	b.position = Vector2(0.0, -0.5 * b.width.y)
 	world.add(b)
 
@@ -304,7 +307,7 @@ func demo_8():
 # A multi-pendulum.
 func demo_9():
 	var b = Box2DBody.new()
-	b.setup(Vector2(100.0, 20.0), INF)
+	b.setup(Vector2(50, 3), INF)
 	b.friction = 0.2
 	b.position = Vector2(0.0, -0.5 * b.width.y)
 	b.rotation = 0.0
@@ -417,7 +420,7 @@ func draw_info_panel():
 	draw_text("(W)arm Starting %s" % ("ON" if PhysicsWorld.warm_starting else "OFF"))
 
 
-func draw_contact_points():
+func draw_contacts():
 	for arb in world.arbiters.values():
 		for i in arb.num_contacts:
 			var c = Color.red
@@ -425,6 +428,18 @@ func draw_contact_points():
 			draw_circle(arb.contacts[i].position, 0.075, c)
 
 
+func draw_bounding_rects():
+	for b in world.bodies:
+		var c = Color.red
+		c.s = 0.85
+		draw_rect(b.get_bounding_rect(), c, false)
+
+
 func _draw():
 	draw_info_panel()
-	draw_contact_points()
+
+	if show_contacts:
+		draw_contacts()
+
+	if show_bounding_rects:
+		draw_bounding_rects()
