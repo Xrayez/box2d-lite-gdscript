@@ -18,6 +18,10 @@ var warm_starting = true
 var position_correction = true
 
 
+func _init():
+	Engine.physics_jitter_fix = 0.0
+
+
 func add(p_object):
 	if p_object is Box2DBody:
 		bodies.push_back(p_object)
