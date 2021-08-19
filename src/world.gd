@@ -4,7 +4,7 @@ var bodies: Array
 var joints: Array
 var arbiters: Dictionary
 
-export var gravity = Vector2(0, -10)
+export var gravity = Vector2(0, 10)
 export var iterations = 10
 
 enum BroadPhase {
@@ -110,6 +110,12 @@ func broad_phase_grid():
 					continue
 				pairs[key] = true
 
+				var r1 = body_a.get_bounding_rect()
+				var r2 = body_b.get_bounding_rect()
+				if not r1.intersects(r2, true):
+					# If bounding rects don't intersect, we won't get any contacts.
+					continue
+
 				var new_arb = Box2DArbiter.new(body_a, body_b) # Narrow-phase.
 
 				if new_arb.num_contacts > 0:
@@ -119,6 +125,20 @@ func broad_phase_grid():
 						arbiters[key].update(new_arb.contacts, new_arb.num_contacts)
 				else:
 					var _erased = arbiters.erase(key)
+
+	# Remove outdated collision pairs, as bodies may be
+	# teleported or quickly moved from one cell to another.
+	var to_erase = []
+
+	for key in arbiters:
+		var arb = arbiters[key]
+		var r1 = arb.body_1.get_bounding_rect()
+		var r2 = arb.body_2.get_bounding_rect()
+		if not r1.intersects(r2, true):
+			to_erase.push_back(key)
+
+	for key in to_erase:
+		var _erased = arbiters.erase(key)
 
 
 func step(dt: float):

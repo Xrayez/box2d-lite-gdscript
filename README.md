@@ -36,11 +36,8 @@ changes, see [`samples/main.gd`](samples/main.gd).
 
 ### Coordinate system
 
-In Box2D-Lite, the positive Y axis points up, so everything rendered in Godot
-would be displayed upside down. To fix this, we simply flip the `Camera2D` zoom
-value so that Y axis is displayed inverted! If someone would like to convert
-existing coordinate system to conform with Godot, feel free to open a pull
-request.
+Unlike in Godot, the positive Y axis points *up* in Box2D-Lite. Therefore, some
+constants like gravity are converted so that positive Y axis points *down*.
 
 ### Performance
 
